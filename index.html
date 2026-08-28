@@ -1,0 +1,1573 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍿 爆米花之家 | 时代少年团官方粉丝站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #FFD700;
+            --dark-gold: #FFA500;
+            --black: #1a1a1a;
+            --dark-bg: #0d0d0d;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-gray: #aaa;
+            --accent: #ff6b6b;
+        }
+
+        body {
+            font-family: 'WenQuanYi Micro Hei', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* 飘落的爆米花动画 */
+        .popcorn-falling {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .popcorn-particle {
+            position: absolute;
+            font-size: 20px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 5%;
+            background: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 10px 5%;
+            box-shadow: 0 5px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0d0d0d 70%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(255, 107, 107, 0.05) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            padding: 20px;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--gold), #fff, var(--dark-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s ease-in-out infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        .hero-tagline {
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            color: var(--black);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-outline:hover {
+            background: var(--gold);
+            color: var(--black);
+            transform: translateY(-3px);
+        }
+
+        /* Section 通用 */
+        .section {
+            padding: 100px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 60px;
+            color: var(--gold);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '🍿';
+            display: block;
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+
+        /* 粉丝名含义 */
+        .meaning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .meaning-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .meaning-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .meaning-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .meaning-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--gold);
+        }
+
+        .meaning-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* 成员介绍 */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 28px;
+        }
+
+        .member-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.08));
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.05), transparent);
+            transition: left 0.5s;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .member-card:hover::before {
+            left: 100%;
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        /* 成员照片（真实图片） */
+        .member-photo {
+            position: relative;
+            width: 100%;
+            height: 340px;
+            overflow: hidden;
+        }
+
+        .member-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .member-card:hover .member-photo img {
+            transform: scale(1.06);
+        }
+
+        /* 照片底部渐变遮罩 + 担当标签 */
+        .member-photo .member-role {
+            position: absolute;
+            left: 15px;
+            bottom: 15px;
+            margin: 0;
+            padding: 6px 16px;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 20px;
+            font-size: 0.82rem;
+            color: var(--gold);
+            font-weight: 600;
+            z-index: 3;
+        }
+
+        .member-info {
+            padding: 22px 24px 26px;
+        }
+
+        .member-name {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-light);
+        }
+
+        .member-birth {
+            font-size: 0.83rem;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+        }
+
+        .member-desc {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.65;
+            text-align: left;
+        }
+
+        .member-fan {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-align: left;
+        }
+
+        /* 图片加载失败时的占位（保证美观） */
+        .member-photo img::after {
+            content: '🍿';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            font-size: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .member-photo { height: 300px; }
+        }
+
+        /* 最新动态 */
+        .news-timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .news-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+        }
+
+        .news-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .news-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        .news-content {
+            width: 45%;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .news-content:hover {
+            border-color: var(--gold);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.1);
+        }
+
+        .news-date {
+            font-size: 0.85rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .news-title-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .news-desc {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .news-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--gold);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* 音乐作品 */
+        .music-section {
+            background: linear-gradient(180deg, var(--dark-bg), #111);
+        }
+
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .album-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .album-card:hover {
+            transform: scale(1.03);
+            border-color: var(--gold);
+        }
+
+        .album-cover {
+            width: 150px;
+            height: 150px;
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .album-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--gold);
+        }
+
+        .album-year {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        .album-tracks {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        /* 歌曲列表 */
+        .songs-section {
+            padding: 60px 5%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .song-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .song-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .song-note {
+            font-size: 1.2rem;
+        }
+
+        .song-name {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        /* 应援色 & 口号 */
+        .cheer-section {
+            text-align: center;
+            padding: 80px 5%;
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a0d 50%, #0d0d0d 100%);
+        }
+
+        .cheer-colors {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .color-item {
+            text-align: center;
+        }
+
+        .color-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .color-gold {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .color-black {
+            background: linear-gradient(135deg, #333, #000);
+            border: 2px solid #555;
+        }
+
+        .color-name {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .cheer-slogan {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 30px 0;
+            letter-spacing: 5px;
+        }
+
+        /* 倒计时 */
+        .countdown-section {
+            text-align: center;
+            padding: 60px 5%;
+            background: var(--dark-bg);
+        }
+
+        .countdown-title {
+            font-size: 1.5rem;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--gold);
+            display: block;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        /* 数据成就 */
+        .stats-section {
+            padding: 80px 5%;
+            background: linear-gradient(180deg, #111, var(--dark-bg));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            margin-top: 5px;
+        }
+
+        /* 留言板 */
+        .message-section {
+            padding: 80px 5%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .message-form {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .message-form input,
+        .message-form textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .message-form input:focus,
+        .message-form textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .message-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .message-list {
+            margin-top: 40px;
+        }
+
+        .message-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--gold);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .message-author {
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+
+        .message-text {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: #080808;
+            padding: 60px 5% 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .footer-text {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .footer-copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* 回到顶部 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+        }
+
+        /* 音乐播放器 */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .music-player button {
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .music-player button:hover {
+            transform: scale(1.2);
+        }
+
+        .music-player .now-playing {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .cheer-slogan {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+            }
+
+            .news-timeline::before {
+                left: 20px;
+            }
+
+            .news-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+                padding-left: 50px;
+            }
+
+            .news-content {
+                width: 100%;
+            }
+
+            .news-dot {
+                left: 20px;
+            }
+
+            .countdown-number {
+                font-size: 2rem;
+            }
+
+            .music-player {
+                bottom: 10px;
+                left: 10px;
+                padding: 8px 12px;
+            }
+
+            .music-player .now-playing {
+                display: none;
+            }
+        }
+
+        /* 加载动画 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-popcorn {
+            font-size: 4rem;
+            animation: bounce 0.6s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+        }
+
+        /* 卡片进入动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-popcorn">🍿</div>
+            <div class="loading-text">正在加载爆米花之家<span class="loading-dots"></span></div>
+        </div>
+    </div>
+
+    <!-- 飘落爆米花 -->
+    <div class="popcorn-falling" id="popcornFalling"></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo">🍿 爆米花之家</a>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#meaning">粉丝名含义</a></li>
+                <li><a href="#members">成员介绍</a></li>
+                <li><a href="#news">最新动态</a></li>
+                <li><a href="#music">音乐作品</a></li>
+                <li><a href="#cheer">应援文化</a></li>
+                <li><a href="#message">留言板</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">🍿 爆米花之家 🍿</h1>
+            <p class="hero-subtitle">时代少年团 · TNT · Teens in Times</p>
+            <p class="hero-tagline">"加冠之年，爱你爱我" | 破天下，定风云，时代少年并肩行</p>
+            <div class="hero-buttons">
+                <a href="#members" class="btn btn-primary">认识少年们</a>
+                <a href="#meaning" class="btn btn-outline">了解爆米花</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 粉丝名含义 -->
+    <section class="section" id="meaning">
+        <h2 class="section-title fade-in">为什么叫"爆米花"？</h2>
+        <div class="meaning-grid">
+            <div class="meaning-card fade-in">
+                <div class="meaning-icon">💥</div>
+                <h3>TNT = Boom = 爆！</h3>
+                <p>组合英文名 TNT 意为烈性炸药，谐音"爆"。粉丝就像玉米粒在高温下瞬间膨胀、释放香气——一声巨响后，炸出的是紧紧簇拥、热烈又甜蜜的爆米花。</p>
+            </div>
+            <div class="meaning-card fade-in">
+                <div class="meaning-icon">🎬</div>
+                <h3>陪伴的含义</h3>
+                <p>爆米花是看电影时的经典零食，象征着<b>陪伴</b>。就像看电影离不开爆米花，少年们的每一步成长，爆米花都会陪伴在身边，一路同行。</p>
+            </div>
+            <div class="meaning-card fade-in">
+                <div class="meaning-icon">🗳️</div>
+                <h3>民主票选诞生</h3>
+                <p>2019年11月21日，在"观星者""时代少女"等多个候选名中，"爆米花"以高票<b>民主投票</b>脱颖而出，成为官方粉丝名。每位成员都对粉丝异常偏爱。</p>
+            </div>
+            <div class="meaning-card fade-in">
+                <div class="meaning-icon">🎵</div>
+                <h3>专属歌曲《爆米花》</h3>
+                <p>2020年4月3日，出道百天的少年们发布单曲《爆米花》，成为内娱罕见以<b>粉丝名命名</b>的作品。"我们间就像电影，刚好遇见爆米花"——这首歌已成为每场演唱会的压轴环节。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 成员介绍 -->
+    <section class="section" id="members" style="background: linear-gradient(180deg, var(--dark-bg), #111);">
+        <h2 class="section-title fade-in">七位少年，各绽锋芒</h2>
+        <div class="members-grid">
+            <div class="member-card fade-in">
+                <div class="member-photo">
+                    <img src="1.jpg" alt="马嘉祺">
+                    <div class="member-role">队长 · 主唱</div>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">马嘉祺</div>
+                    <div class="member-birth">2002.12.12 · 射手座 · 河南郑州</div>
+                    <div class="member-desc">团队核心主唱，嗓音极具故事感，兼具创作实力。沉稳靠谱，是团队的定心丸。曾参加《歌手2025》等音综。</div>
+                    <div class="member-fan">🎈 唯粉名：小气球 | 💜 应援色：月白星紫</div>
+                </div>
+            </div>
+            <div class="member-card fade-in">
+                <div class="member-photo">
+                    <img src="2.jpg" alt="丁程鑫">
+                    <div class="member-role">主舞 · 门面</div>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">丁程鑫</div>
+                    <div class="member-birth">2002.02.24 · 双鱼座 · 四川安岳</div>
+                    <div class="member-desc">全能ACE，北电表演系毕业。舞台表现力超强，舞姿轻盈有张力。常驻《你好，星期六》等综艺。</div>
+                    <div class="member-fan">⭐ 唯粉名：比邻星 | 🟡 应援色：金色</div>
+                </div>
+            </div>
+            <div class="member-card fade-in">
+                <div class="member-photo">
+                    <img src="3.jpg" alt="宋亚轩">
+                    <div class="member-role">主唱 · 门面</div>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">宋亚轩</div>
+                    <div class="member-birth">2004.03.04 · 双鱼座 · 山东滨州</div>
+                    <div class="member-desc">天籁主唱，音色清澈治愈，自带温柔滤镜。歌声极具感染力。常驻《王牌对王牌》等综艺。</div>
+                    <div class="member-fan">🐚 唯粉名：小海螺 | 🔵 应援色：浅空天胧</div>
+                </div>
+            </div>
+            <div class="member-card fade-in">
+                <div class="member-photo">
+                    <img src="4.jpg" alt="刘耀文">
+                    <div class="member-role">舞担 · Rap担 · 忙内</div>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">刘耀文</div>
+                    <div class="member-birth">2005.09.23 · 天秤座 · 重庆</div>
+                    <div class="member-desc">全能忙内，气场超强，唱跳爆发力十足。舞台风格帅气利落，成长速度惊艳全网。</div>
+                    <div class="member-fan">🌙 唯粉名：满月 | ⚪ 应援色：耀月银白</div>
+                </div>
+            </div>
+            <div class="member-card fade-in">
+                <div class="member-photo">
+                    <img src="5.jpg" alt="张真源">
+                    <div class="member-role">主唱</div>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">张真源</div>
+                    <div class="member-birth">2003.04.16 · 白羊座 · 重庆</div>
+                    <div class="member-desc">中戏音乐剧专业，唱功稳定。声线温润厚实，性格沉稳通透，温柔且有力量。常驻《跑男》等综艺。</div>
+                    <div class="member-fan">🍭 唯粉名：真知棒 | 🌊 应援色：水玉暖炽</div>
+                </div>
+            </div>
+            <div class="member-card fade-in">
+                <div class="member-photo">
+                    <img src="6.jpg" alt="严浩翔">
+                    <div class="member-role">Rap担 · 原创唱作人</div>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">严浩翔</div>
+                    <div class="member-birth">2004.08.16 · 狮子座 · 广东广州</div>
+                    <div class="member-desc">说唱担当，风格独特鲜明，兼具创作才华。舞台气场全开，帅气又通透。常驻《说唱巅峰对决2026》。</div>
+                    <div class="member-fan">🥤 唯粉名：盐汽水 | 🔴 应援色：珊瑚红</div>
+                </div>
+            </div>
+            <div class="member-card fade-in">
+                <div class="member-photo">
+                    <img src="7.jpg" alt="贺峻霖">
+                    <div class="member-role">MC · 舞担 · 主持担当</div>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">贺峻霖</div>
+                    <div class="member-birth">2004.06.15 · 双子座 · 四川成都</div>
+                    <div class="member-desc">中传播音专业，主持担当。嗓音清亮灵动，节奏感绝佳，舞台表现力鲜活，元气满满自带光芒。</div>
+                    <div class="member-fan">🌊 唯粉名：深海 | 🌊 应援色：春海明月</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 最新动态 -->
+    <section class="section" id="news">
+        <h2 class="section-title fade-in">最新动态</h2>
+        <div class="news-timeline">
+            <div class="news-item fade-in">
+                <div class="news-content">
+                    <div class="news-date">2026.08.25</div>
+                    <div class="news-title-text">🎉 成团七周年纪念</div>
+                    <div class="news-desc">七位成员统一发文"加冠之年，爱你爱我"，同步上线第四张专辑《加冠》（收录11首歌曲），全国14城同步开展粉丝线下团建活动。</div>
+                </div>
+                <div class="news-dot"></div>
+            </div>
+            <div class="news-item fade-in">
+                <div class="news-content">
+                    <div class="news-date">2026.08.21</div>
+                    <div class="news-title-text">🎤 《加冠》专辑正式上线</div>
+                    <div class="news-desc">第四张专辑《加冠》全平台发行，以传统成人礼"冠礼"为核心概念，共收录11首歌曲，呼应"七年加冕之旅"。</div>
+                </div>
+                <div class="news-dot"></div>
+            </div>
+            <div class="news-item fade-in">
+                <div class="news-content">
+                    <div class="news-date">2026.05.07</div>
+                    <div class="news-title-text">📢 官方辟谣"单飞"传闻</div>
+                    <div class="news-desc">针对网曝"明年单飞"传闻，时代少年团官方发文声明为不实信息，团体合约仍在有效期，七人阵容不变。</div>
+                </div>
+                <div class="news-dot"></div>
+            </div>
+            <div class="news-item fade-in">
+                <div class="news-content">
+                    <div class="news-date">2026.02.17</div>
+                    <div class="news-title-text">🧧 新春"七轮红包雨"</div>
+                    <div class="news-desc">大年初一，以"每十分钟一轮，七份祝福贺新春"为主题，在微博与B站同步发放红包，七轮对应七位成员的祝福主题。</div>
+                </div>
+                <div class="news-dot"></div>
+            </div>
+            <div class="news-item fade-in">
+                <div class="news-content">
+                    <div class="news-date">2026.03.29</div>
+                    <div class="news-title-text">🛡️ 时代峰峻发声明辟谣</div>
+                    <div class="news-desc">针对网传"聊天记录"谣言，时代峰峻发声明回应称相关记录均为造谣，公司已取证维权。</div>
+                </div>
+                <div class="news-dot"></div>
+            </div>
+            <div class="news-item fade-in">
+                <div class="news-content">
+                    <div class="news-date">2025</div>
+                    <div class="news-title-text">📀 《乌托邦少年》后新专辑筹备</div>
+                    <div class="news-desc">继2022年《乌托邦少年》、2023年《大时代》系列后，组合持续推出新作，音乐风格不断突破。</div>
+                </div>
+                <div class="news-dot"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 音乐作品 -->
+    <section class="section music-section" id="music">
+        <h2 class="section-title fade-in">音乐作品</h2>
+        <div class="albums-grid">
+            <div class="album-card fade-in">
+                <div class="album-cover">👑</div>
+                <div class="album-name">《加冠》</div>
+                <div class="album-year">2026 · 第四张专辑</div>
+                <div class="album-tracks">收录11首歌曲 · "十一首歌，十一顶冠"</div>
+            </div>
+            <div class="album-card fade-in">
+                <div class="album-cover">📀</div>
+                <div class="album-name">《大时代》</div>
+                <div class="album-year">2023 · 单曲系列</div>
+                <div class="album-tracks">躺着真舒服 / 楼外楼 / 青春不枉 等</div>
+            </div>
+            <div class="album-card fade-in">
+                <div class="album-cover">🌌</div>
+                <div class="album-name">《乌托邦少年》</div>
+                <div class="album-year">2022 · 第二张录音室专辑</div>
+                <div class="album-tracks">百忧戒 / 有你的季节 / 你要快乐 等</div>
+            </div>
+            <div class="album-card fade-in">
+                <div class="album-cover">🐘</div>
+                <div class="album-name">《舞象之年》</div>
+                <div class="album-year">2021 · 首张录音室专辑</div>
+                <div class="album-tracks">朱雀 / 哪吒 / 理想之途 等</div>
+            </div>
+        </div>
+
+        <div class="songs-section">
+            <h3 style="text-align:center; color: var(--gold); margin-bottom: 30px; font-size: 1.5rem;">🎵 代表单曲</h3>
+            <div class="songs-grid">
+                <div class="song-item"><span class="song-note">🍿</span><span class="song-name">爆米花</span></div>
+                <div class="song-item"><span class="song-note">🎒</span><span class="song-name">全校通报</span></div>
+                <div class="song-item"><span class="song-note">🗺️</span><span class="song-name">无尽的冒险</span></div>
+                <div class="song-item"><span class="song-note">💭</span><span class="song-name">梦游记</span></div>
+                <div class="song-item"><span class="song-note">👑</span><span class="song-name">朱雀</span></div>
+                <div class="song-item"><span class="song-note">🧜</span><span class="song-name">哪吒</span></div>
+                <div class="song-item"><span class="song-note">👧</span><span class="song-name">姐姐真漂亮</span></div>
+                <div class="song-item"><span class="song-note">🤝</span><span class="song-name">有你</span></div>
+                <div class="song-item"><span class="song-note">🌡️</span><span class="song-name">渐暖</span></div>
+                <div class="song-item"><span class="song-note">💪</span><span class="song-name">要你管</span></div>
+                <div class="song-item"><span class="song-note">🎭</span><span class="song-name">百忧戒</span></div>
+                <div class="song-item"><span class="song-note">🏮</span><span class="song-name">侠</span></div>
+                <div class="song-item"><span class="song-note">🎯</span><span class="song-name">绝配</span></div>
+                <div class="song-item"><span class="song-note">😊</span><span class="song-name">我喜欢你</span></div>
+                <div class="song-item"><span class="song-note">🕰️</span><span class="song-name">爱到1440</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 应援文化 -->
+    <section class="cheer-section" id="cheer">
+        <div class="section-title fade-in" style="margin-bottom: 20px;">应援文化</div>
+        <div class="cheer-colors fade-in">
+            <div class="color-item">
+                <div class="color-circle color-gold"></div>
+                <div class="color-name">金色 Gold</div>
+            </div>
+            <div class="color-item">
+                <div class="color-circle color-black"></div>
+                <div class="color-name">黑色 Black</div>
+            </div>
+        </div>
+        <p style="color: var(--text-gray); margin-bottom: 20px;">🍿 官方应援色：<b style="color: var(--gold);">黄色 + 黑色</b></p>
+        <div class="cheer-slogan fade-in">破天下，定风云，时代少年并肩行</div>
+        <p style="color: var(--text-gray); max-width: 600px; margin: 0 auto; line-height: 1.8;">
+            演唱会现场，那片金灿灿、闪闪发亮的灯牌海洋——正是爆米花们的应援阵地。<br>
+            "北斗七星少了一颗还是北斗七星吗？"<br>
+            "他们也是，少了一个人就不叫TNT时代少年团。"
+        </p>
+    </section>
+
+    <!-- 数据统计 -->
+    <section class="stats-section">
+        <h2 class="section-title fade-in">闪耀数据</h2>
+        <div class="stats-grid">
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="7">0</div>
+                <div class="stat-label">成员人数</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="2019">0</div>
+                <div class="stat-label">出道年份</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="4">0</div>
+                <div class="stat-label">录音室专辑</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="11">0</div>
+                <div class="stat-label">《加冠》收录曲数</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="14">0</div>
+                <div class="stat-label">七周年团建城市</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="100">0</div>
+                <div class="stat-label">+ 首音乐作品</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 倒计时 -->
+    <section class="countdown-section">
+        <div class="countdown-title">⏳ 距离下一个纪念日 · 2027.08.25 成团八周年</div>
+        <div class="countdown" id="countdown">
+            <div class="countdown-item">
+                <span class="countdown-number" id="days">0</span>
+                <span class="countdown-label">天</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="hours">0</span>
+                <span class="countdown-label">时</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="minutes">0</span>
+                <span class="countdown-label">分</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="seconds">0</span>
+                <span class="countdown-label">秒</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 留言板 -->
+    <section class="message-section" id="message">
+        <h2 class="section-title fade-in">💬 爆米花留言板</h2>
+        <div class="message-form fade-in">
+            <input type="text" id="msgName" placeholder="你的昵称（如：一颗爆米花🍿）">
+            <textarea id="msgText" placeholder="写下你对少年们的心里话..."></textarea>
+            <button class="btn btn-primary" onclick="addMessage()" style="width: 100%;">🍿 发送心意</button>
+        </div>
+        <div class="message-list" id="messageList">
+            <div class="message-item">
+                <div class="message-author">🌟 小气球味的爆米花</div>
+                <div class="message-text">"加冠之年，爱你爱我"——七周年快乐！从《全校通报》到《加冠》，我们一直在！💛🖤</div>
+            </div>
+            <div class="message-item">
+                <div class="message-author">🎵  popcorn_2026</div>
+                <div class="message-text">《爆米花》这首歌每次听都会哭，我们间就像电影，刚好遇见爆米花 🎬🍿</div>
+            </div>
+            <div class="message-item">
+                <div class="message-author">👑 加冠礼见证者</div>
+                <div class="message-text">七顶冠冕，七份坚持。少年们，爆米花永远陪你们走下去！破天下，定风云！</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">🍿 爆米花之家</div>
+        <p class="footer-text">
+            这里是属于所有爆米花的温馨小窝<br>
+            "原来白雪公主和七个小矮人的现实版是七个男孩和一群女孩"<br>
+            陪伴是最长情的告白 ❤️
+        </p>
+        <div class="footer-links">
+            <a href="#home">首页</a>
+            <a href="#members">成员</a>
+            <a href="#news">动态</a>
+            <a href="#music">音乐</a>
+            <a href="#message">留言</a>
+        </div>
+        <div class="footer-copyright">
+            <p>© 2026 爆米花之家 · 非官方粉丝站 · 仅供粉丝交流使用</p>
+            <p>时代少年团 Teens in Times (TNT) · 北京时代峰峻文化艺术发展有限公司</p>
+            <p style="margin-top: 10px; font-size: 0.8rem; color: #555;">本网站为粉丝自发制作，所有信息来源于公开报道，如有侵权请联系删除</p>
+        </div>
+    </footer>
+
+    <!-- 音乐播放器 -->
+    <div class="music-player">
+       
+        <audio controls src="爆米花.mp3"loop autoppiay muted></audio>
+        <span class="now-playing">🎵 正在播放：爆米花 - TNT（循环播放中）</span>
+    </div>
+
+    <!-- 回到顶部 -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // 加载动画
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 1200);
+        });
+
+        // 飘落爆米花
+        function createPopcorn() {
+            const container = document.getElementById('popcornFalling');
+            const emojis = ['🍿', '🌽', '✨', '💛', '🖤'];
+            const popcorn = document.createElement('div');
+            popcorn.className = 'popcorn-particle';
+            popcorn.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            popcorn.style.left = Math.random() * 100 + '%';
+            popcorn.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            popcorn.style.fontSize = (Math.random() * 15 + 12) + 'px';
+            container.appendChild(popcorn);
+            setTimeout(() => popcorn.remove(), 10000);
+        }
+        setInterval(createPopcorn, 800);
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+                backToTop.classList.add('show');
+            } else {
+                navbar.classList.remove('scrolled');
+                backToTop.classList.remove('show');
+            }
+        });
+
+        // 滚动动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // 数字动画
+        function animateNumbers() {
+            document.querySelectorAll('.stat-number').forEach(el => {
+                const target = parseInt(el.dataset.target);
+                let count = 0;
+                const increment = target / 60;
+                const timer = setInterval(() => {
+                    count += increment;
+                    if (count >= target) {
+                        el.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        el.textContent = Math.floor(count);
+                    }
+                }, 25);
+            });
+        }
+
+        const statsSection = document.querySelector('.stats-section');
+        let animated = false;
+        window.addEventListener('scroll', () => {
+            if (!animated && window.scrollY + window.innerHeight > statsSection.offsetTop) {
+                animateNumbers();
+                animated = true;
+            }
+        });
+
+        // 倒计时
+        function updateCountdown() {
+            const target = new Date('2027-08-25T00:00:00+08:00').getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days;
+                document.getElementById('hours').textContent = hours;
+                document.getElementById('minutes').textContent = minutes;
+                document.getElementById('seconds').textContent = seconds;
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 留言板
+        function addMessage() {
+            const name = document.getElementById('msgName').value.trim() || '匿名爆米花🍿';
+            const text = document.getElementById('msgText').value.trim();
+            if (!text) {
+                alert('请写下你的心里话~ 🍿');
+                return;
+            }
+            const list = document.getElementById('messageList');
+            const item = document.createElement('div');
+            item.className = 'message-item';
+            const now = new Date();
+            const time = now.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            item.innerHTML = `
+                <div class="message-author">${escapeHtml(name)} <span style="font-size:0.8rem;color:#666;">· ${time}</span></div>
+                <div class="message-text">${escapeHtml(text)}</div>
+            `;
+            list.prepend(item);
+            document.getElementById('msgName').value = '';
+            document.getElementById('msgText').value = '';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.getElementById('msgText').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                addMessage();
+            }
+        });
+
+        // 回到顶部
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+  
+        // 初始化一些飘落
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createPopcorn, i * 200);
+        }
+    </script>
+</body>
+</html>
